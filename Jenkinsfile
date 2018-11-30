@@ -14,7 +14,7 @@ pipeline {
             }
         }
     
-        stage ('Restore-nuget') {
+        stage ('RestorePackage') {
              steps {
 
              bat 'C:/nuget/nuget.exe restore "%WORKSPACE%/src/HelloWorld/HelloWorld.sln"'
@@ -22,14 +22,14 @@ pipeline {
              }
         } 
         
-        stage ('Build-MSBuild') {
+        stage ('Build') {
              steps {
                 bat "\"${tool 'MSBuild_17'}\" \"${env.WORKSPACE}/src/HelloWorld/HelloWorld.sln\" /p:Configuration=Debug /p:Platform=\"Any CPU\" /p:ProductVersion=1.0.0.${env.BUILD_NUMBER}"
         
              }
         }
         
-        stage ('Test-MSTest') {
+        stage ('Test') {
              steps {
 //              bat '"C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/MSTest.exe" /resultsfile:"%WORKSPACE%/test/HelloWorldTest/Results.trx" /testcontainer:"%WORKSPACE%/test/HelloWorldTest/bin/Debug/HelloWorldTest.dll" /nologo'
 
@@ -41,11 +41,9 @@ pipeline {
             steps{
                 bat "cd %WORKSPACE%"
                 
-                
                 withSonarQubeEnv('SonarQubeLNVLE1717') {
                      
-                    bat "\"${tool 'SonarScannerMSBuild'}\" begin /k:SonarQubeCSharpPipelineKey /n:SonarQubeCSharpPipeline /v:%build.number% /d:sonar.host.url=${SONAR_HOST_URL} /d:sonar.login=admin /d:sonar.password=admin /d:sonar.log.level=DEBUG \"/d:sonar.cs.vscoveragexml.reportsPaths=%CD%\\VisualStudio.coveragexml\" /d:sonar.verbose=true \"/d:sonar.projectBaseDir=%WORKSPACE%\\src\\HelloWorld\""
-
+                    bat "\"${tool 'SonarScannerMSBuild'}\" begin /k:CSharpPipelineKey /n:CSharpPipeline /v:%build.number% /d:sonar.host.url=${SONAR_HOST_URL} /d:sonar.login=admin /d:sonar.password=admin /d:sonar.log.level=DEBUG \"/d:sonar.cs.vscoveragexml.reportsPaths=%CD%\\VisualStudio.coveragexml\" /d:sonar.verbose=true \"/d:sonar.projectBaseDir=%WORKSPACE%\\src\\HelloWorld\""
                 }
             }
         }
@@ -58,7 +56,7 @@ pipeline {
             }
         }
 
-        stage ('SonarQube-CodeCoverage-Collect') {
+        stage ('CodeCoverage-Collect') {
             steps{
                 bat "cd %WORKSPACE%"
                 
@@ -66,7 +64,7 @@ pipeline {
             }
         }       
        
-        stage ('SonarQube-CodeCoverage-Analyze') {
+        stage ('CodeCoverage-Analyze') {
             steps{
                 bat "cd %WORKSPACE%"
                 
@@ -81,5 +79,5 @@ pipeline {
                 
             }
         }
-     }
-  }
+    }
+}
