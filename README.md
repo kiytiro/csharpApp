@@ -1,6 +1,6 @@
 # CSharp Jenkins Pipeline
 
-This example demonstrates the Jenkins pipeline file syntax. The HelloWorld Microsoft solution file is provided.
+This example demonstrates the Jenkins pipeline file syntax to process Microsoft CSharp project. The HelloWorld Microsoft solution file is provided.
 
 ### Assumptions: 
 The Microsoft Visual Studio 2017 is intalled on the Jenkins server.
@@ -15,3 +15,4 @@ If they are not exist need to install the following Jenkins plugins:
 
 ### Create Jenkins Global Tool
 After the plugins are installed need to configure Jenkins to use them as a tool.
+![image](img/JMSBuildTool.png)
