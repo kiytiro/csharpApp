@@ -2,6 +2,12 @@ pipeline {
     
     agent any
      stages{
+         
+        stage ('CleanWorkspace') {
+            steps {
+                cleanWs()
+            }
+        }
         stage ('Checkout-git') {
             steps {
                 git 'https://github.com/kiytiro/csharpApp.git'
@@ -35,9 +41,10 @@ pipeline {
             steps{
                 bat "cd %WORKSPACE%"
                 
+                
                 withSonarQubeEnv('SonarQubeLNVLE1717') {
                      
-                    bat " \"${tool 'SonarScannerMSBuild'}\" begin /k:SonarQubeCSharpPipelineKey /n:SonarQubeCSharpPipeline /v:%build.number% /d:sonar.host.url=${SONAR_HOST_URL} /d:sonar.login=admin /d:sonar.password=admin /d:sonar.log.level=DEBUG /d:sonar.verbose=true \"/d:sonar.projectBaseDir=%WORKSPACE%\\src\\HelloWorld\""
+                    bat "\"${tool 'SonarScannerMSBuild'}\" begin /k:SonarQubeCSharpPipelineKey /n:SonarQubeCSharpPipeline /v:%build.number% /d:sonar.host.url=${SONAR_HOST_URL} /d:sonar.login=admin /d:sonar.password=admin /d:sonar.log.level=DEBUG \"/d:sonar.cs.vscoveragexml.reportsPaths=%CD%\\VisualStudio.coveragexml\" /d:sonar.verbose=true \"/d:sonar.projectBaseDir=%WORKSPACE%\\src\\HelloWorld\""
 
                 }
             }
@@ -50,7 +57,22 @@ pipeline {
                 bat "\"${tool 'MSBuild_17'}\" \"${env.WORKSPACE}/src/HelloWorld/HelloWorld.sln\" /t:rebuild"
             }
         }
+
+        stage ('SonarQube-CodeCoverage-Collect') {
+            steps{
+                bat "cd %WORKSPACE%"
+                
+                bat " \"${tool 'CodeCoverage'}\" collect \"/output:%CD%\\VisualStudio.coverage\" \"${tool 'VSTestConsole'}\" \"%WORKSPACE%\\test\\HelloWorldTest\\bin\\Debug\\HelloWorldTest.dll\""
+            }
+        }       
        
+        stage ('SonarQube-CodeCoverage-Analyze') {
+            steps{
+                bat "cd %WORKSPACE%"
+                
+                bat "\"${tool 'CodeCoverage'}\" analyze \"/output:%CD%\\VisualStudio.coveragexml\"  \"%CD%\\VisualStudio.coverage\" "
+            }
+        }           
         stage ('SonarQube-End') {
             steps{
                 bat "cd %WORKSPACE%"
