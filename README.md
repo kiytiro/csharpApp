@@ -35,11 +35,11 @@ https://www.nuget.org/downloads
 
 Go to **Jenkins -> Manage Jenkins -> Configure System** add SonarQube server information.
 
-![image](img/sonarqubeServer.png)
+![image](img/sonarqubeSever.png)
 
 ### Create SonarQube Global Tool
 
-Go to **Jenkins -> Manage Jenkins -> Global Tool Configuration**, to add SnarScanner for MSBuild.
+Go to **Jenkins -> Manage Jenkins -> Global Tool Configuration**, to add SonarScanner for MSBuild.
 
 
 ![image](img/sonarscannerMSBuild.png)
