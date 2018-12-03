@@ -24,7 +24,7 @@ pipeline {
         
         stage ('Build') {
              steps {
-                bat "\"${tool 'MSBuild_17'}\" \"${env.WORKSPACE}/src/HelloWorld/HelloWorld.sln\" /p:Configuration=Debug /p:Platform=\"Any CPU\" /p:ProductVersion=1.0.0.${env.BUILD_NUMBER}"
+                bat "\"${tool 'MSBuild'}\" \"${env.WORKSPACE}/src/HelloWorld/HelloWorld.sln\" /p:Configuration=Debug /p:Platform=\"Any CPU\" /p:ProductVersion=1.0.0.${env.BUILD_NUMBER}"
         
              }
         }
